@@ -7,3 +7,6 @@ data/eval.db
 .pytest_cache/
 evals/results/*.json
 !evals/results/final-*.json
+web/node_modules/
+web/.vercel/
+livekit.toml

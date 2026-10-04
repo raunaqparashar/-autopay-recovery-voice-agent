@@ -3,6 +3,8 @@
 Outbound voice agent that calls customers whose autopay failed, verifies identity, and recovers the payment
 (retry, schedule, secure card-update link, or payment plan). Uses 10 fictional customers and a mock billing system.
 
+**Live demo:** https://autopay-voice-demo.vercel.app (browser mic; fictional customers; 5-minute calls, one at a time)
+
 **Stack:** LiveKit Agents · Deepgram STT · Groq `gpt-oss-120b` · Cartesia TTS · optional Twilio SIP for PSTN.
 
 ## Setup

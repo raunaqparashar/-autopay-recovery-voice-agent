@@ -1,0 +1,8 @@
+{
+  "name": "autopay-voice-demo",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "livekit-server-sdk": "^2.13.0"
+  }
+}

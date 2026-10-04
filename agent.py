@@ -5,10 +5,12 @@ Run:  python agent.py dev        (worker; calls are dispatched by dial.py)
 """
 from __future__ import annotations
 
-import time
+import asyncio
 import json
 import logging
 import os
+import sqlite3
+import time
 from datetime import date
 
 from dotenv import load_dotenv
@@ -218,8 +220,12 @@ def prewarm(proc) -> None:
 async def entrypoint(ctx: JobContext) -> None:
     meta = json.loads(ctx.job.metadata or "{}")
     cid = meta.get("customer_id") or os.getenv("CONSOLE_CUSTOMER_ID", "C001")
-    customer = billing.get_customer(cid)
-    if customer is None:
+    # Hosted demo: every call starts from a fresh, seeded mock DB.
+    if os.getenv("RESET_DB_EACH_CALL") == "1" or not billing.DB_PATH.exists():
+        billing.reset()
+    try:
+        customer = billing.get_customer(cid)
+    except sqlite3.OperationalError:  # empty/corrupt DB file
         billing.reset()
         customer = billing.get_customer(cid)
     first = customer["name"].split()[0]
@@ -288,6 +294,18 @@ async def entrypoint(ctx: JobContext) -> None:
             return
 
     await session.start(room=ctx.room, agent=RecoveryAgent(customer, greeting))
+
+    # Hosted demo guard: hard cap on call length so a forgotten tab can't burn free-tier quota.
+    max_s = int(os.getenv("MAX_CALL_SECONDS", "0"))
+    if max_s:
+        async def _time_limit() -> None:
+            await asyncio.sleep(max_s)
+            billing.set_outcome(cid, "callback", "demo time limit reached")
+            await session.say("We've reached the time limit for this demo call. Thanks for trying it out, goodbye!",
+                              allow_interruptions=False)
+            await ctx.api.room.delete_room(api.DeleteRoomRequest(room=ctx.room.name))
+
+        asyncio.create_task(_time_limit())
 
 
 if __name__ == "__main__":
