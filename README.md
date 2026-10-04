@@ -5,6 +5,18 @@ Outbound voice agent that calls customers whose autopay failed, verifies identit
 
 **Stack:** LiveKit Agents · Deepgram STT · Groq `gpt-oss-120b` · Cartesia TTS · optional Twilio SIP for PSTN.
 
+## Setup
+Python 3.11+. Free-tier keys go in `.env` (copied from `.env.example`):
+
+| Needed for | Keys |
+|---|---|
+| Unit tests | none |
+| Evals | `GROQ_API_KEY` ([console.groq.com](https://console.groq.com)) |
+| Voice session | Groq + `LIVEKIT_*` ([cloud.livekit.io](https://cloud.livekit.io)), `DEEPGRAM_API_KEY` ([deepgram.com](https://console.deepgram.com)), `CARTESIA_API_KEY` ([cartesia.ai](https://play.cartesia.ai)) |
+| Phone calls | the above + SIP trunk (`setup_trunk.py`) |
+
+`python check_env.py` shows which keys are set without printing them.
+
 ## Run
 ```
 pip install -r requirements.txt
