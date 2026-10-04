@@ -1,7 +1,7 @@
 """Autopay-recovery voice agent (LiveKit Agents 1.x).
 
 Run:  python agent.py dev        (worker; calls are dispatched by dial.py)
-      python agent.py console    (talk to it in your terminal, no phone needed)
+      python agent.py console    (local mic/speaker session, no phone needed)
 """
 from __future__ import annotations
 
