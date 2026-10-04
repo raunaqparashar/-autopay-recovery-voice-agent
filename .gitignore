@@ -1,0 +1,9 @@
+.venv/
+.env
+__pycache__/
+data/billing.db
+data/transcripts/
+data/eval.db
+.pytest_cache/
+evals/results/*.json
+!evals/results/final-*.json
